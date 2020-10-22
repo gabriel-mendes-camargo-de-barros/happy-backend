@@ -3,6 +3,7 @@ import { getRepository } from 'typeorm';
 import Orphanage from '../models/Orphanage';
 import orphanageView from '../views/orphanages_view';
 import * as Yup from 'yup';
+import User from '../models/User';
 
 export default {
     async index(request: Request, response: Response) {
@@ -81,5 +82,23 @@ export default {
         await orphanagesRepository.save(orphanage);
     
         return response.status(201).json(orphanage);
-    }
+    },
+
+    async indexAccess(request: Request, response: Response) {
+        const {
+            name,
+            email,
+            pass,
+        } = request.body;
+
+        const data = {
+            name,
+            email,
+            pass,
+        };
+
+        console.log(data);
+
+        return response.status(201).json(user);
+    },
 };

@@ -4,7 +4,7 @@ import Orphanage from '../models/Orphanage';
 import orphanageView from '../views/orphanages_view';
 import * as Yup from 'yup';
 import User from '../models/User';
-import bcrypt from 'bcrypt';
+// import bcrypt from 'bcrypt';
 
 export default {
   async index(request: Request, response: Response) {

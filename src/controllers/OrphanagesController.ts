@@ -4,7 +4,7 @@ import Orphanage from '../models/Orphanage';
 import orphanageView from '../views/orphanages_view';
 import * as Yup from 'yup';
 import User from '../models/User';
-// import bcrypt from 'bcrypt';
+import bcrypt from 'bcrypt';
 
 export default {
   async index(request: Request, response: Response) {
@@ -85,40 +85,40 @@ export default {
     return response.status(201).json(orphanage);
   },
 
-  async indexAccess(request: Request, response: Response) {
+  indexAccess(request: Request, response: Response) {
     const {
       name,
       email,
-      pass,
     } = request.body;
 
-    const userRepository = getRepository(User);
+    bcrypt.hash(request.body.passs, 10, async function(err, hash) {
+      // const passs = hash;
 
-    // await bcrypt.hash(pass, 10, (err: Error, hash) => {
+      const userRepository = getRepository(User);
+
+      const pass = hash;
+
+      const data = {
+        name,
+        email,
+        pass,
+      };
+
+      const user = userRepository.create(data);
+
+      const schema = Yup.object().shape({
+        name: Yup.string().required(),
+        email: Yup.string().required(),
+        pass: Yup.string().required(),
+      });
       
-    // });
+      await schema.validate(data, {
+        abortEarly: false,
+      });
 
-    const data = {
-      name,
-      email,
-      pass,
-    };
+      await userRepository.save(user);
 
-    const user = userRepository.create(data);
-
-
-    const schema = Yup.object().shape({
-      name: Yup.string().required(),
-      email: Yup.string().required(),
-      pass: Yup.string().required(),
+      return response.status(201).json(user);
     });
-    
-    await schema.validate(data, {
-      abortEarly: false,
-    });
-
-    await userRepository.save(user);
-
-    return response.status(201).json(user);
   },
 };
